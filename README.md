@@ -929,31 +929,6 @@ xychart-beta
 
 ---
 
-## About the Author
-
-**Harry Joseph** is an independent consultant and Application Developer Lead operating through **[scriptdotnet.com](https://scriptdotnet.com)**, a boutique technology consultancy offering:
-
-| Service Area | Relevance to This Mandate |
-|---|---|
-| **Cloud Support** | Azure / M365 integration, Exchange Online relay, Entra ID configuration |
-| **Application Support** | Power BI reporting, Autosys scheduling, ASP.NET solutions |
-| **Automation & Workflow** | PowerShell, VBScript, M-Files event handlers, AP process automation |
-| **Tools & DevOps** | Visual Studio, Git, GitHub, SQL Server, ODBC integrations |
-| **Operating Systems** | Windows Server administration, Active Directory, Group Policy |
-
-> *"Our goal is to empower organizations to achieve their objectives seamlessly and efficiently. With a focus on excellence and client success, we navigate the complexities of technology to deliver tangible results. We're not just a service provider — we're your strategic partner in achieving technological excellence and business success."*  
-> — [scriptdotnet.com](https://scriptdotnet.com)
-
-### Credentials
-
-| Credential | Institution | Period |
-|---|---|---|
-| <img src="Harry%20Joseph_badge%20(2)%20(Small).png" alt="Humber Dean's Honour Roll" width="320"/> | Humber College — Faculty of Applied Sciences & Technology | Winter 2025 |
-| Application Developer Lead | Incorporated Consulting Practice | Active |
-| Bilingual Professional | English / Français | — |
-
----
-
 ## Document Control
 
 | Field | Value |
@@ -971,3 +946,4 @@ xychart-beta
 ---
 
 *End of Runbook*
+
