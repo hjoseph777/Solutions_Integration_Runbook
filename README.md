@@ -12,10 +12,14 @@
 > **Classification:** Internal — Technical Reference  
 > **Languages:** Bilingual — English / Français *(full documentation available in both languages upon request — disponible en français sur demande)*
 
+**Document Map:** Operational procedures and troubleshooting are in this runbook; technical validation scoring checklists and sign-off templates are in [toolsheet.md](toolsheet.md).
+
 ---
 
 ## Table of Contents
 
+0. [How to Use This Runbook](#0-how-to-use-this-runbook)
+    - [Technical Validation Toolsheet](toolsheet.md)
 1. [Executive Summary](#1-executive-summary)
 2. [Solution Architecture Overview](#2-solution-architecture-overview)
 3. [How M-Files Interacts with the Business](#3-how-m-files-interacts-with-the-business)
@@ -33,6 +37,71 @@
 11. [Active Directory & M365 Security](#11-active-directory--m365-security)
 12. [Escalation & Resolution Matrix](#12-escalation--resolution-matrix)
 13. [Key Performance Indicators (KPIs)](#13-key-performance-indicators-kpis)
+14. [Revision Notes](#14-revision-notes)
+
+---
+
+## 0. How to Use This Runbook
+
+Use this section first before executing any scenario.
+
+For technical validation scoring, bilingual triage checklists, and printable sign-off templates, use the standalone toolsheet:
+
+➡️ [Technical Validation Toolsheet](toolsheet.md)
+
+### Operating Environment
+
+| Item | Requirement |
+|---|---|
+| Core stack | Windows Server + M-Files Server + Xerox Capture Agent + SQL Server |
+| Supporting services | Active Directory, Microsoft 365 (M365) relay/notifications, OCR engine, ODBC/ERP connectivity |
+| Operator profile | IT Admin / Solutions Engineer with runbook access |
+| Required access | Local admin on integration servers, M-Files Admin rights, SQL read/diagnostic access, AD read access |
+| Safety mode | Run all scripts in **DEV/UAT first**, then promote to PROD after validation |
+
+### Inputs, Outputs, and Success Criteria
+
+| Item | Definition |
+|---|---|
+| Expected input | Incident symptom (error message, affected system, timestamp, impacted users) |
+| Expected output | Confirmed root cause, documented fix steps, and validated recovery evidence |
+| Completion criteria | Service restored + test transaction completed + incident notes updated |
+
+### Estimated Time by Section
+
+| Section / Scenario | Typical Duration |
+|---|---|
+| Initial triage and scope confirmation | 10–15 min |
+| Scenario 1 — MFP capture failure | 30–60 min |
+| Scenario 2 — workflow stuck | 30–90 min |
+| Scenario 3 — SQL/ODBC failure | 20–60 min |
+| Scenario 4 — vault unreachable/login failure | 15–45 min |
+| Scenario 5 — OCR extraction issue | 45–120 min |
+| Post-incident validation and handoff notes | 10–20 min |
+
+### Quick Validation Examples (Command + Expected Output)
+
+```powershell
+# Service state check
+Get-Service "MFiles Server"
+# Expected: Status = Running
+
+# SQL port reachability check
+Test-NetConnection -ComputerName SQLSVR -Port 1433
+# Expected: TcpTestSucceeded : True
+
+# M-Files server port check
+Test-NetConnection -ComputerName MFILESSVR -Port 2266
+# Expected: TcpTestSucceeded : True
+```
+
+```sql
+-- Validation query (post-approval sync check)
+SELECT TOP 10 InvoiceNumber, Status, LastUpdated
+FROM dbo.InvoiceQueue
+ORDER BY LastUpdated DESC;
+-- Expected: recently approved invoices appear with updated status/time.
+```
 
 ---
 
@@ -407,6 +476,33 @@ flowchart TD
 | 5 | Review SQL Error Log | SSMS → Management → SQL Server Logs |
 | 6 | Validate M-Files connection string | M-Files Admin → External DB Connection |
 | 7 | Run test query from M-Files | M-Files Admin → Test Query |
+
+### Example Verification Outputs
+
+```powershell
+PS> Get-Service MSSQLSERVER
+
+Status   Name               DisplayName
+------   ----               -----------
+Running  MSSQLSERVER        SQL Server (MSSQLSERVER)
+
+PS> Test-NetConnection -ComputerName SQLSVR -Port 1433
+
+ComputerName     : SQLSVR
+RemotePort       : 1433
+TcpTestSucceeded : True
+```
+
+```sql
+SELECT COUNT(*) AS PendingInvoices
+FROM dbo.InvoiceQueue
+WHERE Status = 'Pending';
+
+-- Expected example output:
+-- PendingInvoices
+-- ---------------
+-- 12
+```
 
 ### Automation — ODBC & SQL Health Check
 
@@ -929,16 +1025,23 @@ xychart-beta
 
 ---
 
+## 14. Revision Notes
+
+| Version | Date | Author | Change Summary |
+|---|---|---|---|
+| 1.1 | February 27, 2026 | Harry Joseph | Added execution guidance section, command/output verification examples, SQL validation sample, and formal revision history. |
+| 1.0 | February 24, 2026 | Harry Joseph | Initial publication of AP & ECM integration runbook. |
+
+---
+
 ## Document Control
 
 | Field | Value |
 |---|---|
 | Document Title | Solutions Integration Runbook — AP & ECM |
 | Reference | XNAJP00028075 |
-| Version | 1.0 |
-| Date | February 24, 2026 |
-| Author | Harry Joseph — Application Developer Lead, Solutions Integration Engineer |
-| Website | [scriptdotnet.com](https://scriptdotnet.com) |
+| Version | 1.1 |
+| Date | February 27, 2026 |
 | Languages | English / Français (Bilingual) |
 | Review Cycle | Quarterly |
 | Classification | Internal |
@@ -946,4 +1049,3 @@ xychart-beta
 ---
 
 *End of Runbook*
-
